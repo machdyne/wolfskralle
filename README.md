@@ -17,7 +17,7 @@ Find more information on the [Wolfskralle product page](https://machdyne.com/pro
 
 | Pin | Signal |
 | --- | ------ |
-| 2 | ZP1 (Zwölf GSCL) / SWCLK | 
+| 1 | ZP1 (Zwölf GSCL) / SWCLK | 
 | 3 | ZP2 (Zwölf GSDA) | 
 | 5 | SWIO (programmer swio) | 
 | 8 | RESET (programmer reset) | 
