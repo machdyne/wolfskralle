@@ -1,6 +1,6 @@
 # Wolfskralle Programmer
 
-Wolfskralle is an ISP + spring contact programmer an for CH32 MCUs and [Zwölf](https://github.com/machdyne/zwolf) [LS10](https://machdyne.com/product/zwolf-ls10/) modules.
+Wolfskralle is an ISP + spring contact programmer for CH32 MCUs and [Zwölf](https://github.com/machdyne/zwolf) [LS10](https://machdyne.com/product/zwolf-ls10/) modules.
 
 ![Wolfskralle](https://github.com/machdyne/wolfskralle/blob/38c62a5283cb2000488aab3b664369fcaf6a570f/wolfskralle.png)
 
