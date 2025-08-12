@@ -6,7 +6,7 @@ Wolfskralle is an ISP + spring contact programmer an for CH32 MCUs and [Zwölf L
 
 This repo will contain schematics, pinouts and a 3D-printable socket housing for the spring connector.
 
-Find more information on the [Wolfskralle product page](https://machdyne.com/product/zwolf-wolfskralle/).
+Find more information on the [Wolfskralle product page](https://machdyne.com/product/wolfskralle-programmer/).
 
 ## Pinout
 
