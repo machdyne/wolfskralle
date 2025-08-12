@@ -17,10 +17,10 @@ Find more information on the [Wolfskralle product page](https://machdyne.com/pro
 
 | Pin | Signal |
 | --- | ------ |
-| 1 | ZP1 (GSCL) / SWCLK | 
-| 3 | ZP2 (GSDA) | 
+| 2 | ZP1 (Zwölf GSCL) / SWCLK | 
+| 3 | ZP3 (Zwölf GSDA) | 
 | 5 | SWIO (programmer swio) | 
-| 7 | RESET (programmer reset) | 
+| 8 | RESET (programmer reset) | 
 | 2 | TPWR3V3 (target power) | 
 | 4 | TSWIO (target swio) | 
 | 6 | TRESET (target reset) | 
