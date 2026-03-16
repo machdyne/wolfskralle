@@ -3,8 +3,8 @@
  * Copyright (c) 2025 Lone Dynamics Corporation. All rights reserved.
  *
  * required hardware:
- *  - 2 x M3 x 16mm countersunk bolts
- *  - 2 x M3 nuts
+ *  - 4 x M3 x 16mm countersunk bolts
+ *  - 4 x M3 nuts
  *
  */
 
