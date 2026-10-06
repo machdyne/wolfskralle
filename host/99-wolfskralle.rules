@@ -1,0 +1,4 @@
+# Wolfskralle: access for the logged-in user (and the plugdev group).
+# sudo cp 99-wolfskralle.rules /etc/udev/rules.d/ && sudo udevadm control --reload
+# Then unplug and plug in the Wolfskralle.
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="0001", ATTRS{product}=="Wolfskralle", MODE="0660", GROUP="plugdev", TAG+="uaccess"

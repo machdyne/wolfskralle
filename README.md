@@ -26,6 +26,32 @@ Find more information on the [Wolfskralle product page](https://machdyne.com/pro
 | 6 | TRESET (target reset) | 
 | 8 | GND | 
 
+## Firmware
+
+The Wolfskralle's firmware and its command-line tool, `wolfctl`, are being
+written in phases; see [docs/plan.md](docs/plan.md) for the plan and the
+current state.
+
+```
+$ make -C firmware deps && make -C firmware      # firmware/wolfskralle.bin
+$ make -C firmware flash                         # with a WCH-LinkE on J2
+$ make -C host && make -C host test              # host/wolfctl, protocol tests
+$ host/wolfctl info
+$ host/wolfctl flash basic-ls10a.bin             # program the module
+```
+
+| Document | Contents |
+|---|---|
+| [docs/plan.md](docs/plan.md) | development plan and history |
+| [docs/hardware.md](docs/hardware.md) | the board as the firmware sees it (pins, v0/v1) |
+| [docs/firmware.md](docs/firmware.md) | building and flashing the firmware |
+| [docs/protocol.md](docs/protocol.md) | the USB protocol |
+| [docs/swio.md](docs/swio.md) | the link to the target: SWIO, its timing, the scan |
+| [docs/debug.md](docs/debug.md) | connecting to the chip, identifying and reading it |
+| [docs/programming.md](docs/programming.md) | programming a module, and the failsafe rules |
+| [docs/wolfctl.md](docs/wolfctl.md) | the command-line tool |
+| [docs/hwtest.md](docs/hwtest.md) | hardware tests and their results |
+
 ## License
 
 The contents of this repo are released under the [Lone Dynamics Open License](LICENSE.md).

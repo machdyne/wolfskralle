@@ -1,0 +1,5 @@
+wolfctl
+test/proto_test
+test/swio_test
+test/dbg_test
+test/flash_test

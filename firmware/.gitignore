@@ -1,0 +1,7 @@
+ch32fun/
+rv003usb/
+*.bin
+*.elf
+*.hex
+*.lst
+*.map
