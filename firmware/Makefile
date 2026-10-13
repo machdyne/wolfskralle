@@ -25,7 +25,7 @@ EXTRA_CFLAGS+=-DWK_DEBUG
 endif
 
 EXTRA_CFLAGS+=-I. -I../common -I$(RV003USB)/rv003usb -I$(RV003USB)/lib
-ADDITIONAL_C_FILES+=wkdev.c swio.c ch32dbg.c dbgcmds.c $(RV003USB)/rv003usb/rv003usb.S $(RV003USB)/rv003usb/rv003usb.c
+ADDITIONAL_C_FILES+=wkdev.c swio.c ch32dbg.c dbgcmds.c i2cm.c i2ccmds.c $(RV003USB)/rv003usb/rv003usb.S $(RV003USB)/rv003usb/rv003usb.c
 
 ifneq ($(wildcard $(CH32FUN)/ch32fun.mk),)
 include $(CH32FUN)/ch32fun.mk

@@ -66,4 +66,8 @@ the network is symmetric, and cnlohr's firmware drives PC2 and reads PC1.
 2. SWIO is open-drain with a 5K1 pull-up, so rising edges are slow. The
    width of a "1" bit as the target sees it is the driven low time plus the
    rise time, which must stay below 4T (about 333 ns on a CH32V003).
-3. Sechs (I2C) is reachable on PC5/PC6 with the hardware I2C peripheral.
+3. Sechs (I2C) is reachable on PC5/PC6. The firmware bit-bangs it
+   (docs/sechs.md) rather than use I2C1's full remap: TIM2's partial
+   remap 1, which SWIO uses, also maps TIM2 CH1 to PC5. On an LS11,
+   Zwölf pins 1 and 10 are the same signal (SCL and SWIO): SWIO is off
+   while the bus is in use.

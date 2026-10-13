@@ -24,7 +24,7 @@
 
 #define WK_USB_VID          0x1209
 #define WK_USB_PID          0x0001      /* pid.codes test PID: see docs */
-#define WK_PROTO_VERSION    6
+#define WK_PROTO_VERSION    7
 
 #define WK_REPORT_ID        0x01        /* 0xFD belongs to rv003usb (reboot) */
 #define WK_REPORT_LEN       128
@@ -51,6 +51,8 @@
 #define WK_CMD_FLASH_END    0x33    /* lock the flash again */
 #define WK_CMD_VERIFY_PAGES 0x34    /* which pages differ from their CRCs */
 #define WK_CMD_PROFILE      0x40    /* where the time went */
+#define WK_CMD_I2C          0x50    /* one I2C transaction on the Sechs bus */
+#define WK_CMD_I2C_SCAN     0x51    /* which addresses answer on the Sechs bus */
 
 /* status in replies */
 #define WK_ST_OK            0x00
@@ -234,6 +236,21 @@
 #define WK_PF_PAGES         48  /* pages erased/written */
 #define WK_PF_FALLBACKS     52  /* fast writes given up */
 #define WK_PF_LEN           56
+
+/* The Sechs bus: Zwölf pins 1 (SCL) and 2 (SDA), bit-banged at about
+ * 40 kHz (docs/sechs.md). Needs target power (the pull-ups are on TPWR);
+ * switches SWIO off (on an LS11, pin 1 is also SWIO).
+ * I2C: request [addr u8, 7-bit][rlen u8, 0..WK_I2C_MAX][wdata...];
+ *   write wdata, then with a repeated start read rlen bytes; neither: an
+ *   address-only probe. Reply [result u8][rdata...] (rdata only if ok).
+ * I2C_SCAN: request none; reply [result u8][16 bytes: bit a set if address
+ *   a (0x08-0x77) acknowledged] */
+#define WK_I2C_MAX          112
+#define WK_I2C_OK           0
+#define WK_I2C_NAK_ADDR     1   /* nobody answered at that address */
+#define WK_I2C_NAK_DATA     2   /* a written byte was not acknowledged */
+#define WK_I2C_STUCK        3   /* a line stays low: no free bus */
+#define WK_I2C_STRETCH      4   /* SCL held low for too long */
 
 static inline uint16_t wk_crc16(uint16_t crc, const uint8_t *p, unsigned n)
 {

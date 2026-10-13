@@ -116,6 +116,15 @@ are safe to send again in any case, but the protocol does not rely on it.
 | 0x33 | FLASH_END | none | result u8 |
 | 0x34 | VERIFY_PAGES | address u32 of the first page, count u8 (1-28), CRC-32 u32 of each page (version 5) | result u8, differs u32 (bit i: page i does not match) |
 | 0x40 | PROFILE | reset u8 (1: zero the counters after reading) | 14 counters (u32), below (version 6) |
+| 0x50 | I2C | address u8 (7-bit), rlen u8 (0-112), then the bytes to write | result u8, then rlen bytes if it is 0 (version 7) |
+| 0x51 | I2C_SCAN | none | result u8, 16 bytes: bit a set if address a (0x08-0x77) acknowledged (version 7) |
+
+Version 7: the Sechs bus, Zwölf pins 1 (SCL) and 2 (SDA) (docs/sechs.md).
+I2C writes the bytes, then reads rlen bytes after a repeated start;
+neither: an address-only probe. Results: 0 ok, 1 no answer at the
+address, 2 a written byte not acknowledged, 3 the bus is stuck, 4 the
+clock was held too long. Both need target power (status 6 otherwise) and
+switch SWIO off.
 
 Version 6: PAGE_WRITE flag 2: the page is known to differ (VERIFY_PAGES
 said so), so the Wolfskralle does not read it before erasing; it still

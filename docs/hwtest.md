@@ -240,3 +240,26 @@ Results:
   including everything around them), 3117 flash controller busy polls,
   2616 GETs (2344 BUSY, now one USB packet each). About 1.8 s is USB
   round trips. Phase 5 closed at this: 23.3 s -> 8.4 s.
+
+## Phase 6: the Sechs check
+
+Firmware 0.9 (protocol 7). An LS10A with BASIC; if possible an LS11A; a
+module with another firmware (or a factory-new chip).
+
+1. **Scan and info.** `wolfctl sechs scan`: 0x0C, LS10A, Machdyne BASIC.
+   `wolfctl sechs info`: Sechs 0.5, status idle (or running a program),
+   ok 0f, INFO lines.
+2. **The check.** `wolfctl -v sechs check`: answered within about 1 s of
+   power-on, console `PRINT 1234+4321 -> 5555`, "installed and runs".
+3. **With the image.** `wolfctl sechs check basic-ls10a.bin`: "its INFO
+   is the image's". The LS11A image on the LS10A: "for another module".
+4. **Flash and check.** `wolfctl flash basic-ls10a.bin --check`.
+5. **Not BASIC.** A factory-new chip or another firmware: "no Sechs module
+   answered" (after 12 s).
+6. **A running program.** A module with a BOOT.BAS: the console test is
+   skipped, the program keeps running.
+7. **SWIO afterwards.** `wolfctl id` after a check: still works (SWIO
+   switches back on by itself).
+8. **The LS11A**, where pin 1 is SCL and SWIO at once: steps 2-4 and 7.
+
+Results: *(not yet done)*

@@ -249,6 +249,7 @@ int do_profile(int reset)
 /* ---- programming (phase 4) ---- */
 
 #include "flash.h"
+#include "sechscmd.h"
 
 static int read_file(const char *path, uint8_t *buf, uint32_t max, uint32_t *len)
 {
@@ -283,7 +284,7 @@ static void flash_progress(void *ctx, uint32_t done, uint32_t total)
 	if (done == total) fprintf(stderr, "\r%-60s\r", "");
 }
 
-int do_flash(int argc, char **argv, int mode, int force)
+int do_flash(int argc, char **argv, int mode, int force, int check)
 {
 	static uint8_t img[FL_IMAGE_MAX];
 	uint32_t len;
@@ -321,6 +322,12 @@ int do_flash(int argc, char **argv, int mode, int force)
 		if (verbose) printf("retries %u, passes %u\n", j.retries, j.passes);
 		if (have_prof && !profile_get(0, prof)) profile_print(prof, secs);
 		if (verbose) print_client_stats();
+		if (check) {
+			/* does the module start and run it? (docs/sechs.md) */
+			int k = flash_image_chip(img, len);
+			return sechs_check(0, 1, 1, k == 3 ? "LS10A" : k == 5 ? "LS11A" : NULL,
+			                   k ? img : NULL, len);
+		}
 		return 0;
 	}
 	fprintf(stderr, "wolfctl: flash: %s\n", flash_message(r));

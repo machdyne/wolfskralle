@@ -1,9 +1,9 @@
 # Wolfskralle firmware: development plan
 
 Status: **phases 1-5 implemented and working on hardware: an LS10A
-(CH32V003) is flashed and verified in 8.4 s. Open: the remaining hardware
-tests of phases 1-5 (docs/hwtest.md), above all the CH32V005 (LS11A);
-then phase 6.**
+(CH32V003) is flashed and verified in 8.4 s. Phase 6 started: the Sechs
+check (round 6), tested in simulation. Open: the remaining hardware tests
+(docs/hwtest.md), above all the CH32V005 (LS11A) and the Sechs check.**
 
 ## Goal
 
@@ -166,10 +166,19 @@ In simulation: 55,000 debug transactions and 270 USB requests for a
 12 KB CH32V003 flash (before 150,000 and 450). Not done: larger reports
 (the remaining USB time is small now), a shorter SWIO bit (needs a scan).
 
-### Phase 6: Sechs and extras
+### Phase 6: Sechs and extras (round 6: the Sechs check done, hardware tests pending)
 - I2C on PC5/PC6: `wolfctl sechs scan/info`; put an LS11 into programming
   mode through Sechs before flashing; after a flash, check that the module
   answers with the new firmware.
+
+Done in round 6 (docs/sechs.md): a bit-banged I2C master
+(`firmware/i2cm.c`), commands I2C and I2C_SCAN (protocol version 7,
+firmware 0.9), `wolfctl sechs scan`, `sechs info`, `sechs check [IMAGE]`
+and `flash --check`: restart the module, wait for it, check that INFO is
+Machdyne BASIC for the right module and in the image, that it reports no
+fault, and that its console answers `PRINT 1234+4321` with 5555. Tested
+against a simulated module at the level of the bus lines
+(`host/test/sechs_test.c`). Not yet: PROGRAM over Sechs for an LS11.
 - Updating the Wolfskralle itself over USB (rv003usb bootloader), and
   programming a second Wolfskralle through J2.
 - Later, if wanted: CH32V2xx/V3xx (two-wire, SWCLK on ZP1).
@@ -179,11 +188,11 @@ In simulation: 55,000 debug transactions and 270 USB requests for a
 ```
 common/     wkproto.h (the protocol, shared)
 firmware/   Makefile, wolfskralle.c, wkdev.c, board.h, usb_config.h, funconfig.h
-            swio.c, swio_bits.h, ch32dbg.c, dbgcmds.c
-host/       wolfctl.c, swiocmd.c, dbgcmd.c, chip.c, flash.c, wkclient.c,
-            wkhid.c, test/
+            swio.c, swio_bits.h, ch32dbg.c, dbgcmds.c, i2cm.c, i2ccmds.c
+host/       wolfctl.c, swiocmd.c, dbgcmd.c, chip.c, flash.c, sechs.c,
+            sechscmd.c, wkclient.c, wkhid.c, test/
 docs/       plan.md, hardware.md, protocol.md, firmware.md, wolfctl.md,
-            swio.md, debug.md, programming.md, hwtest.md
+            swio.md, debug.md, programming.md, sechs.md, hwtest.md
 ```
 
 ## Board v1
@@ -222,3 +231,5 @@ or separate regulator for target power.
   for a full CH32V003; phase 5 closed. Where the rest goes, should it
   ever matter: programming 2.7 s, erasing 1.9 s, CRCs 1.3 s, USB 1.8 s
   (a shorter SWIO bit, cheaper busy polls, larger reports).
+- Round 6: phase 6 started: the Sechs bus and `wolfctl sechs check` /
+  `flash --check` (protocol version 7, firmware 0.9).

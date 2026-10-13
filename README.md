@@ -49,6 +49,7 @@ $ host/wolfctl flash basic-ls10a.bin             # program the module
 | [docs/swio.md](docs/swio.md) | the link to the target: SWIO, its timing, the scan |
 | [docs/debug.md](docs/debug.md) | connecting to the chip, identifying and reading it |
 | [docs/programming.md](docs/programming.md) | programming a module, and the failsafe rules |
+| [docs/sechs.md](docs/sechs.md) | checking a module over Sechs: is BASIC installed and running? |
 | [docs/wolfctl.md](docs/wolfctl.md) | the command-line tool |
 | [docs/hwtest.md](docs/hwtest.md) | hardware tests and their results |
 

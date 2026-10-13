@@ -18,6 +18,8 @@
 #include "swio.h"
 #include "ch32dbg.h"
 #include "dbgcmds.h"
+#include "i2cm.h"
+#include "i2ccmds.h"
 
 /* ---- time ---- */
 
@@ -359,6 +361,38 @@ static uint8_t cmd_profile(const uint8_t *in, uint8_t inlen, uint8_t *out, uint8
 	return WK_ST_OK;
 }
 
+/* ---- the Sechs bus (i2cm.c, i2ccmds.c) on PC5 (SCL) and PC6 (SDA) ----
+ * Open drain: pulled low, or released to the 10K pull-ups on TPWR. The
+ * pins are floating inputs except during a transaction, and only used
+ * with target power on. */
+
+static void zp_pin(int pin, int release)
+{
+	if (release) {
+		funPinMode(pin, GPIO_CFGLR_IN_FLOAT);
+	} else {
+		funDigitalWrite(pin, FUN_LOW);
+		funPinMode(pin, GPIO_CFGLR_OUT_10Mhz_OD);
+	}
+}
+
+void i2cm_scl(int release) { zp_pin(PIN_ZP1, release); }
+void i2cm_sda(int release) { zp_pin(PIN_ZP2, release); }
+int i2cm_scl_in(void) { return funDigitalRead(PIN_ZP1) ? 1 : 0; }
+int i2cm_sda_in(void) { return funDigitalRead(PIN_ZP2) ? 1 : 0; }
+void i2cm_delay(void) { Delay_Us(6); }
+void i2cm_delay_us(uint32_t us) { Delay_Us(us); WDT_FEED(); }
+
+int i2ccmd_ready(void)
+{
+	if (!tpower) return 0;
+	/* on an LS11, Zwölf pin 1 is SWIO as well: SWIO lets go of the line,
+	 * and a debug session ends (the module must run to answer) */
+	swio_off();
+	dbg_halted = 0;
+	return 1;
+}
+
 static uint8_t handler(uint8_t cmd, const uint8_t *in, uint8_t inlen,
                        uint8_t *out, uint8_t *outlen)
 {
@@ -373,6 +407,7 @@ static uint8_t handler(uint8_t cmd, const uint8_t *in, uint8_t inlen,
 		return st;
 	}
 	if (cmd == WK_CMD_PROFILE) return cmd_profile(in, inlen, out, outlen);
+	if (i2ccmd_handle(cmd, in, inlen, out, outlen, &st)) return st;
 
 	switch (cmd) {
 	case WK_CMD_INFO:  return cmd_info(out, outlen);

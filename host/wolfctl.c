@@ -13,6 +13,7 @@
 #include "wkhid.h"
 #include "swiocmd.h"
 #include "dbgcmd.h"
+#include "sechscmd.h"
 
 static const char *usage_text =
 "usage: wolfctl [-d /dev/hidrawN] [-s serial] [-v] command [args]\n"
@@ -45,9 +46,17 @@ static const char *usage_text =
 "                               read it twice; hex dump, or to FILE\n"
 "  crc [ADDR [LEN]]             CRC-32 of memory (default: the whole flash)\n"
 "  resume                       restart the chip's program\n"
-"  flash IMAGE.bin [--force]    program a module (Machdyne BASIC for LS10A\n"
-"                               or LS11A; --force: any firmware)\n"
+"  flash IMAGE.bin [--force] [--check]\n"
+"                               program a module (Machdyne BASIC for LS10A\n"
+"                               or LS11A; --force: any firmware); --check:\n"
+"                               then check BASIC over Sechs (sechs check)\n"
 "  verify IMAGE.bin             does the module hold this image?\n"
+"  sechs scan                   the modules on the Sechs bus (pins 1, 2)\n"
+"  sechs info [ADDR]            a module's registers and INFO\n"
+"  sechs check [IMAGE] [-a ADDR] [--no-restart] [--no-console]\n"
+"                               is Machdyne BASIC installed and running?\n"
+"                               (power-cycles the module first; with IMAGE,\n"
+"                               also that it runs that image)\n"
 "  profile [--reset]            where the Wolfskralle's time went\n"
 "                               (flash -v shows it for the flash)\n"
 "     id, read and crc: --attach  only talk to the running chip\n"
@@ -277,6 +286,8 @@ int main(int argc, char **argv)
 	const char *path = NULL, *serial = NULL;
 	unsigned mon_ms = 0, wait_ms = 0, cycle_every = 0;
 	int len = -1, load = 0, apply = 0, mode = 0, keep_halted = 0, force = 0;
+	int check = 0, restart = 1, console = 1;
+	uint8_t addr = 0;
 	const char *outfile = NULL;
 	char *args[48];
 	int nargs = 0;
@@ -296,6 +307,10 @@ int main(int argc, char **argv)
 		else if (!strcmp(a, "--restart")) mode = (mode & WK_CN_MODE_SLOW) | 2;
 		else if (!strcmp(a, "--halt")) keep_halted = 1;
 		else if (!strcmp(a, "--force")) force = 1;
+		else if (!strcmp(a, "--check")) check = 1;
+		else if (!strcmp(a, "--no-restart")) restart = 0;
+		else if (!strcmp(a, "--no-console")) console = 0;
+		else if (!strcmp(a, "-a") && more) addr = (uint8_t)strtoul(argv[++i], NULL, 0);
 		else if (!strcmp(a, "--slow")) mode |= WK_CN_MODE_SLOW;
 		else if (!strcmp(a, "--reset") && i > 1) args[nargs < 48 ? nargs++ : 47] = "reset";
 		else if (!strcmp(a, "-o") && more) outfile = argv[++i];
@@ -331,7 +346,8 @@ int main(int argc, char **argv)
 	else if (!strcmp(args[0], "read")) r = do_read(nargs - 1, args + 1, mode, outfile, keep_halted);
 	else if (!strcmp(args[0], "crc")) r = do_crc(nargs - 1, args + 1, mode, keep_halted);
 	else if (!strcmp(args[0], "resume")) r = do_resume();
-	else if (!strcmp(args[0], "flash")) r = do_flash(nargs - 1, args + 1, mode, force);
+	else if (!strcmp(args[0], "flash")) r = do_flash(nargs - 1, args + 1, mode, force, check);
+	else if (!strcmp(args[0], "sechs")) r = do_sechs(nargs - 1, args + 1, addr, restart, console);
 	else if (!strcmp(args[0], "verify")) r = do_verify(nargs - 1, args + 1, mode);
 	else if (!strcmp(args[0], "profile")) r = do_profile(nargs > 1 && !strcmp(args[1], "reset"));
 	else usage();

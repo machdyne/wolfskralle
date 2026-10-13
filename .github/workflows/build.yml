@@ -1,0 +1,43 @@
+# Protocol tests, wolfctl and the firmware for every push and pull request.
+# ch32fun and rv003usb are pinned in firmware/Makefile.
+
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  host:
+    name: protocol tests and wolfctl (Linux)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: make test
+        run: make -C host test
+      - name: wolfctl (static, Linux x86-64)
+        run: |
+          gcc -std=gnu99 -O2 -static -Icommon -Ihost -o wolfctl-linux-x86_64 \
+            -Ifirmware host/wolfctl.c host/swiocmd.c host/dbgcmd.c host/chip.c host/flash.c host/wkclient.c host/wkhid.c
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wolfctl
+          path: wolfctl-linux-x86_64
+
+  firmware:
+    name: firmware (CH32V003)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: RISC-V toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-riscv64-unknown-elf libnewlib-dev picolibc-riscv64-unknown-elf
+      - name: ch32fun and rv003usb (pinned)
+        run: make -C firmware deps
+      - name: wolfskralle.bin (fails if it does not fit)
+        run: make -C firmware wolfskralle.bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: firmware/wolfskralle.bin

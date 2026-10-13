@@ -24,7 +24,7 @@
 #include <tinyusb_hid.h>
 #include "wkproto.h"
 
-#define WK_FW_VERSION 0x0008   /* 0.8: also bcdDevice */
+#define WK_FW_VERSION 0x0009   /* 0.9: also bcdDevice */
 
 /* the serial number string, filled from the chip's unique ID at start */
 #define WK_SERIAL_CHARS 16

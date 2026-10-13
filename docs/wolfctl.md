@@ -48,8 +48,11 @@ by its serial number (`-s`, see `list`) or its hidraw device (`-d`). Only one
 | `crc [ADDR [LEN]]` | CRC-32 of memory, by default the whole flash, computed on the Wolfskralle |
 | `resume` | restart the chip's program |
 
-| `flash IMAGE.bin [--force]` | program the module: Machdyne BASIC for LS10A or LS11A (checked against the chip), or with `--force` any firmware; verified, then restarted (docs/programming.md) |
+| `flash IMAGE.bin [--force] [--check]` | program the module: Machdyne BASIC for LS10A or LS11A (checked against the chip), or with `--force` any firmware; verified, then restarted (docs/programming.md); `--check`: then `sechs check` with this image |
 | `verify IMAGE.bin` | does the module hold this image (followed by 0xFF to the end of its flash)? |
+| `sechs scan` | what answers on the Sechs bus (pins 1 and 2), with each module's `mod` and `fw` |
+| `sechs info [ADDR]` | a Sechs module's status, OK, fault, CAPS and INFO (default: 0x0C, or the one module found) |
+| `sechs check [IMAGE] [-a ADDR] [--no-restart] [--no-console]` | is Machdyne BASIC installed and running: restarts the module, waits for it, checks its identity, health and console; with IMAGE also that it is that image's BASIC (docs/sechs.md) |
 | `profile [--reset]` | where the Wolfskralle's time went since the last reset: page reads, erase, program, read-back, CRCs, SWIO packets, USB GETs. `flash -v` resets it before and shows it after the flash |
 
 `id`, `read`, `crc`, `flash` and `verify` also take `--slow`: without the
